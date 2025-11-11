@@ -1,0 +1,165 @@
+# Implementation Plan
+
+- [x] 1. Setup Next.js project dan install dependencies
+  - Initialize Next.js 14 project dengan TypeScript dan Tailwind CSS
+  - Install required packages: @imgly/background-removal, fabric, react-dropzone
+  - Configure TypeScript dengan strict mode
+  - Setup Tailwind CSS configuration
+  - _Requirements: 6.4_
+
+- [x] 2. Create core types dan utilities
+  - [x] 2.1 Define TypeScript interfaces di lib/types.ts
+    - Create EditorState, Transform, EditorAction interfaces
+    - Define error types dan props interfaces untuk semua components
+    - _Requirements: 1.5, 2.5, 3.5, 4.3_
+  - [x] 2.2 Implement canvas utility functions di lib/canvasUtils.ts
+    - Write exportCanvas function untuk download functionality
+    - Create helper functions untuk canvas operations
+    - _Requirements: 5.3, 5.4, 5.5_
+  - [x] 2.3 Implement image processing utilities di lib/imageProcessing.ts
+    - Write composeImage function untuk canvas composition
+    - Create image validation functions
+    - Implement image resize utility untuk optimization
+    - _Requirements: 3.4, 3.5, 4.4, 6.2_
+
+- [x] 3. Implement background removal logic
+  - [x] 3.1 Create background removal module di lib/backgroundRemoval.ts
+    - Integrate @imgly/background-removal library
+    - Implement processBackgroundRemoval function dengan progress callback
+    - Add error handling dan retry logic
+    - _Requirements: 2.1, 2.2, 2.5, 6.1, 6.2_
+  - [x] 3.2 Add model caching configuration
+    - Configure ML model caching untuk faster subsequent loads
+    - _Requirements: 6.1_
+
+- [x] 4. Build ImageUploader component
+  - [x] 4.1 Create ImageUploader.tsx component
+    - Integrate react-dropzone untuk drag & drop functionality
+    - Implement file validation (format dan size)
+    - Add preview thumbnail display
+    - Create error message display untuk invalid files
+    - _Requirements: 1.1, 1.2, 1.3, 1.4_
+  - [ ]* 4.2 Write unit tests untuk ImageUploader
+    - Test file validation logic
+    - Test error handling scenarios
+    - _Requirements: 1.2, 1.3_
+
+- [x] 5. Build CanvasEditor component
+  - [x] 5.1 Create CanvasEditor.tsx dengan fabric.js integration
+    - Initialize fabric.Canvas instance
+    - Implement image rendering pada canvas
+    - Add drag functionality untuk reposition
+    - Implement zoom/scale controls
+    - Add real-time preview updates
+    - _Requirements: 1.4, 3.4, 4.1, 4.2, 4.3, 4.4_
+  - [x] 5.2 Implement canvas composition logic
+    - Integrate composeImage function dari imageProcessing.ts
+    - Handle background color rendering
+    - Handle background image rendering
+    - Apply transform (position, scale) ke foreground
+    - _Requirements: 3.4, 3.5, 4.4_
+  - [ ]* 5.3 Write integration tests untuk CanvasEditor
+    - Test canvas initialization
+    - Test image composition dengan different backgrounds
+    - _Requirements: 3.4, 4.4_
+
+- [x] 6. Build BackgroundSelector component
+  - [x] 6.1 Create BackgroundSelector.tsx
+    - Implement color picker UI
+    - Add file upload untuk custom background images
+    - Create preview display untuk current background
+    - Add clear/reset functionality
+    - _Requirements: 3.1, 3.2, 3.3_
+  - [ ]* 6.2 Write unit tests untuk BackgroundSelector
+    - Test color selection
+    - Test image upload validation
+    - _Requirements: 3.2, 3.3_
+
+- [x] 7. Build ToolBar component
+  - [x] 7.1 Create ToolBar.tsx dengan editing controls
+    - Implement "Remove Background" button
+    - Add scale slider (50% - 200%)
+    - Create reset button
+    - Handle disabled states saat processing
+    - Wire up onRemoveBackground callback
+    - _Requirements: 2.1, 4.1, 4.2, 4.5_
+  - [x] 7.2 Integrate background removal process
+    - Connect ToolBar ke backgroundRemoval.ts
+    - Handle processing state updates
+    - Display progress indicator
+    - _Requirements: 2.1, 2.2, 2.3_
+
+- [x] 8. Build LoadingOverlay component
+  - [x] 8.1 Create LoadingOverlay.tsx
+    - Display loading spinner dengan progress percentage
+    - Show processing status message
+    - Implement overlay yang blocks interaction saat processing
+    - _Requirements: 2.2, 6.5_
+
+- [x] 9. Build DownloadButton component
+  - [x] 9.1 Create DownloadButton.tsx
+    - Implement format selection dropdown (PNG, JPG, WEBP)
+    - Wire up exportCanvas function
+    - Generate filename dengan timestamp
+    - Handle disabled state
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
+  - [ ]* 9.2 Write unit tests untuk DownloadButton
+    - Test format selection
+    - Test filename generation
+    - _Requirements: 5.5_
+
+- [x] 10. Create main editor page
+  - [x] 10.1 Implement app/page.tsx dengan state management
+    - Setup useReducer untuk EditorState management
+    - Wire up semua components (ImageUploader, CanvasEditor, BackgroundSelector, ToolBar, DownloadButton)
+    - Implement state update handlers
+    - Add error boundary untuk error handling
+    - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1_
+  - [x] 10.2 Implement complete user flow
+    - Connect upload → remove background → replace background → download flow
+    - Handle state transitions antar steps
+    - Add loading states dan error handling
+    - _Requirements: 1.4, 2.3, 3.4, 5.3_
+
+- [x] 11. Add error handling dan validation
+  - [x] 11.1 Implement global error handling
+    - Create error boundary component
+    - Add user-friendly error messages
+    - Implement retry mechanism untuk failed operations
+    - _Requirements: 1.3, 2.5_
+  - [x] 11.2 Add browser compatibility checks
+    - Check WebGL support untuk ML model
+    - Check Canvas API support
+    - Display graceful degradation message jika unsupported
+    - _Requirements: 6.4_
+
+- [x] 12. Styling dan responsive design
+  - [x] 12.1 Implement Tailwind CSS styling untuk semua components
+    - Style ImageUploader dengan drag & drop visual feedback
+    - Style CanvasEditor dengan proper layout
+    - Style ToolBar dengan intuitive controls
+    - Style BackgroundSelector dengan color picker dan preview
+    - Style DownloadButton dengan dropdown
+    - _Requirements: 6.3_
+  - [x] 12.2 Add responsive design untuk mobile devices
+    - Implement responsive layout untuk different screen sizes
+    - Optimize touch interactions untuk mobile
+    - _Requirements: 6.3, 6.4_
+
+- [x] 13. Performance optimizations
+  - [x] 13.1 Implement image optimization
+    - Add image resize sebelum processing untuk large images (max 2048px)
+    - Optimize canvas rendering performance
+    - _Requirements: 6.2_
+  - [x] 13.2 Add memory management
+    - Cleanup blob URLs setelah digunakan
+    - Revoke object URLs untuk prevent memory leaks
+    - _Requirements: 6.2, 6.5_
+
+- [x] 14. Accessibility improvements
+  - [x] 14.1 Add ARIA labels dan keyboard navigation
+    - Add proper ARIA labels untuk semua interactive elements
+    - Implement keyboard navigation untuk semua controls
+    - Add focus indicators
+    - Ensure color contrast meets WCAG AA standards
+    - _Requirements: 6.3, 6.4_
