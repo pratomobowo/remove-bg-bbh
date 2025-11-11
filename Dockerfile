@@ -18,7 +18,8 @@ RUN apt-get update && apt-get install -y \
 COPY apps/ ./
 
 # Install Node dependencies
-RUN npm ci
+# Use npm install instead of npm ci to handle cases where package-lock.json might not be available
+RUN npm install
 
 # Install Python dependencies
 RUN pip3 install --no-cache-dir rembg onnxruntime pillow
