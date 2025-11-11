@@ -14,17 +14,14 @@ RUN apt-get update && apt-get install -y \
     libpython3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy package files
-COPY apps/package*.json ./
+# Copy app source (entire apps folder with package.json and package-lock.json)
+COPY apps/ ./
 
 # Install Node dependencies
 RUN npm ci
 
 # Install Python dependencies
 RUN pip3 install --no-cache-dir rembg onnxruntime pillow
-
-# Copy app source
-COPY apps/ ./
 
 # Build Next.js application
 RUN npm run build
